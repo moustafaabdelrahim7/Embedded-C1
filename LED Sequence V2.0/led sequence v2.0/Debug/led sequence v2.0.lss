@@ -1,0 +1,1196 @@
+
+led sequence v2.0.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000005d6  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  0000064a  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000001  00800060  00800060  0000064a  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  0000064a  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  0000067c  2**2
+                  CONTENTS, READONLY
+  5 .debug_aranges 000000b8  00000000  00000000  000006b8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   000010b5  00000000  00000000  00000770  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 000007c3  00000000  00000000  00001825  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   000007eb  00000000  00000000  00001fe8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  00000148  00000000  00000000  000027d4  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    00000674  00000000  00000000  0000291c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    00000cb2  00000000  00000000  00002f90  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 00000078  00000000  00000000  00003c42  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 6d 02 	jmp	0x4da	; 0x4da <__vector_1>
+   8:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+   c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  10:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  14:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  18:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  1c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  20:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  24:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  28:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  2c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  30:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  34:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  38:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  3c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  40:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  44:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  48:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  4c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  50:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+
+00000060 <__do_clear_bss>:
+  60:	20 e0       	ldi	r18, 0x00	; 0
+  62:	a0 e6       	ldi	r26, 0x60	; 96
+  64:	b0 e0       	ldi	r27, 0x00	; 0
+  66:	01 c0       	rjmp	.+2      	; 0x6a <.do_clear_bss_start>
+
+00000068 <.do_clear_bss_loop>:
+  68:	1d 92       	st	X+, r1
+
+0000006a <.do_clear_bss_start>:
+  6a:	a1 36       	cpi	r26, 0x61	; 97
+  6c:	b2 07       	cpc	r27, r18
+  6e:	e1 f7       	brne	.-8      	; 0x68 <.do_clear_bss_loop>
+  70:	0e 94 47 00 	call	0x8e	; 0x8e <main>
+  74:	0c 94 e9 02 	jmp	0x5d2	; 0x5d2 <_exit>
+
+00000078 <__bad_interrupt>:
+  78:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000007c <LED_INIT>:
+{
+	DIO_PIN_TYPE PIN_NUM;
+	DIO_PORT_TYPE PORT;
+	PORT=PIN/8;
+	PIN_NUM=PIN%8;
+	if(PORT>4)
+  7c:	88 32       	cpi	r24, 0x28	; 40
+  7e:	28 f4       	brcc	.+10     	; 0x8a <LED_INIT+0xe>
+	{
+		return INVLAID_LED_PIN_NUMBER;
+	}
+	else
+	{
+		DIO_INITPIN(PIN,OUTPUT);
+  80:	60 e0       	ldi	r22, 0x00	; 0
+  82:	0e 94 60 00 	call	0xc0	; 0xc0 <DIO_INITPIN>
+		return VALID_LED;
+  86:	80 e0       	ldi	r24, 0x00	; 0
+  88:	08 95       	ret
+	DIO_PORT_TYPE PORT;
+	PORT=PIN/8;
+	PIN_NUM=PIN%8;
+	if(PORT>4)
+	{
+		return INVALID_LED_PORT;
+  8a:	81 e0       	ldi	r24, 0x01	; 1
+	else
+	{
+		DIO_INITPIN(PIN,OUTPUT);
+		return VALID_LED;
+	}
+}
+  8c:	08 95       	ret
+
+0000008e <main>:
+#define   F_CPU 8000000UL            //FOR DELAY LIB
+
+int main(void)
+{
+	/**********intializing LED& DIO*************/
+	LED_INIT(pina0);
+  8e:	80 e0       	ldi	r24, 0x00	; 0
+  90:	0e 94 3e 00 	call	0x7c	; 0x7c <LED_INIT>
+	LED_INIT(pina1);
+  94:	81 e0       	ldi	r24, 0x01	; 1
+  96:	0e 94 3e 00 	call	0x7c	; 0x7c <LED_INIT>
+	LED_INIT(pina2);
+  9a:	82 e0       	ldi	r24, 0x02	; 2
+  9c:	0e 94 3e 00 	call	0x7c	; 0x7c <LED_INIT>
+	LED_INIT(pina3);
+  a0:	83 e0       	ldi	r24, 0x03	; 3
+  a2:	0e 94 3e 00 	call	0x7c	; 0x7c <LED_INIT>
+	DIO_INITPIN(pind2,INPLUP);
+  a6:	62 e0       	ldi	r22, 0x02	; 2
+  a8:	8a e1       	ldi	r24, 0x1A	; 26
+  aa:	0e 94 60 00 	call	0xc0	; 0xc0 <DIO_INITPIN>
+	/*****************INTIALIZING INTERRUPT***********/
+	sei();
+  ae:	78 94       	sei
+	EXI_TriggerEdge(EX_INT0,LOW_LEVEL);
+  b0:	60 e0       	ldi	r22, 0x00	; 0
+  b2:	80 e0       	ldi	r24, 0x00	; 0
+  b4:	0e 94 11 02 	call	0x422	; 0x422 <EXI_TriggerEdge>
+	EXI_Enable(EX_INT0);
+  b8:	80 e0       	ldi	r24, 0x00	; 0
+  ba:	0e 94 ff 01 	call	0x3fe	; 0x3fe <EXI_Enable>
+  be:	ff cf       	rjmp	.-2      	; 0xbe <main+0x30>
+
+000000c0 <DIO_INITPIN>:
+   */
+DIO_ERROR_TYPE DIO_INITPIN(DIO_PIN_TYPE PIN,DIO_PINSTATUS_TYPE STATUS)
+{
+	DIO_PIN_TYPE PIN_NUM;
+	DIO_PORT_TYPE PORT;
+	PORT=PIN/8;                                  //to determine which port i'm using
+  c0:	98 2f       	mov	r25, r24
+  c2:	96 95       	lsr	r25
+  c4:	96 95       	lsr	r25
+  c6:	96 95       	lsr	r25
+	PIN_NUM=PIN%8;                               //to determine which pin in the port i'm using 
+	DIO_ERROR_TYPE error=VALID_DIO;
+	if(PORT>4)
+  c8:	95 30       	cpi	r25, 0x05	; 5
+  ca:	08 f0       	brcs	.+2      	; 0xce <DIO_INITPIN+0xe>
+  cc:	f9 c0       	rjmp	.+498    	; 0x2c0 <DIO_INITPIN+0x200>
+DIO_ERROR_TYPE DIO_INITPIN(DIO_PIN_TYPE PIN,DIO_PINSTATUS_TYPE STATUS)
+{
+	DIO_PIN_TYPE PIN_NUM;
+	DIO_PORT_TYPE PORT;
+	PORT=PIN/8;                                  //to determine which port i'm using
+	PIN_NUM=PIN%8;                               //to determine which pin in the port i'm using 
+  ce:	87 70       	andi	r24, 0x07	; 7
+	{
+		return INVALID_PIN_NUMBER;
+	}
+	else
+	 {
+	switch(STATUS)
+  d0:	61 30       	cpi	r22, 0x01	; 1
+  d2:	31 f0       	breq	.+12     	; 0xe0 <DIO_INITPIN+0x20>
+  d4:	08 f4       	brcc	.+2      	; 0xd8 <DIO_INITPIN+0x18>
+  d6:	a4 c0       	rjmp	.+328    	; 0x220 <DIO_INITPIN+0x160>
+  d8:	62 30       	cpi	r22, 0x02	; 2
+  da:	09 f4       	brne	.+2      	; 0xde <DIO_INITPIN+0x1e>
+  dc:	51 c0       	rjmp	.+162    	; 0x180 <DIO_INITPIN+0xc0>
+  de:	ef c0       	rjmp	.+478    	; 0x2be <DIO_INITPIN+0x1fe>
+	{
+		case INFREE:
+		switch(PORT)
+  e0:	91 30       	cpi	r25, 0x01	; 1
+  e2:	c1 f0       	breq	.+48     	; 0x114 <DIO_INITPIN+0x54>
+  e4:	28 f0       	brcs	.+10     	; 0xf0 <DIO_INITPIN+0x30>
+  e6:	92 30       	cpi	r25, 0x02	; 2
+  e8:	39 f1       	breq	.+78     	; 0x138 <DIO_INITPIN+0x78>
+  ea:	93 30       	cpi	r25, 0x03	; 3
+  ec:	b9 f1       	breq	.+110    	; 0x15c <DIO_INITPIN+0x9c>
+  ee:	e7 c0       	rjmp	.+462    	; 0x2be <DIO_INITPIN+0x1fe>
+		{
+			case PA:
+			clear_bit(DDRA,PIN_NUM);
+  f0:	4a b3       	in	r20, 0x1a	; 26
+  f2:	21 e0       	ldi	r18, 0x01	; 1
+  f4:	30 e0       	ldi	r19, 0x00	; 0
+  f6:	b9 01       	movw	r22, r18
+  f8:	02 c0       	rjmp	.+4      	; 0xfe <DIO_INITPIN+0x3e>
+  fa:	66 0f       	add	r22, r22
+  fc:	77 1f       	adc	r23, r23
+  fe:	8a 95       	dec	r24
+ 100:	e2 f7       	brpl	.-8      	; 0xfa <DIO_INITPIN+0x3a>
+ 102:	cb 01       	movw	r24, r22
+ 104:	80 95       	com	r24
+ 106:	94 2f       	mov	r25, r20
+ 108:	98 23       	and	r25, r24
+ 10a:	9a bb       	out	0x1a, r25	; 26
+			clear_bit(PORTA,PIN_NUM);       /*to make sure that the port register  is cleared in case of reuse*/
+ 10c:	9b b3       	in	r25, 0x1b	; 27
+ 10e:	89 23       	and	r24, r25
+ 110:	8b bb       	out	0x1b, r24	; 27
+			break;
+ 112:	d5 c0       	rjmp	.+426    	; 0x2be <DIO_INITPIN+0x1fe>
+			case PB:
+			clear_bit(DDRB,PIN_NUM);
+ 114:	47 b3       	in	r20, 0x17	; 23
+ 116:	21 e0       	ldi	r18, 0x01	; 1
+ 118:	30 e0       	ldi	r19, 0x00	; 0
+ 11a:	b9 01       	movw	r22, r18
+ 11c:	02 c0       	rjmp	.+4      	; 0x122 <DIO_INITPIN+0x62>
+ 11e:	66 0f       	add	r22, r22
+ 120:	77 1f       	adc	r23, r23
+ 122:	8a 95       	dec	r24
+ 124:	e2 f7       	brpl	.-8      	; 0x11e <DIO_INITPIN+0x5e>
+ 126:	cb 01       	movw	r24, r22
+ 128:	80 95       	com	r24
+ 12a:	94 2f       	mov	r25, r20
+ 12c:	98 23       	and	r25, r24
+ 12e:	97 bb       	out	0x17, r25	; 23
+			clear_bit(PORTB,PIN_NUM);
+ 130:	98 b3       	in	r25, 0x18	; 24
+ 132:	89 23       	and	r24, r25
+ 134:	88 bb       	out	0x18, r24	; 24
+			break;
+ 136:	c3 c0       	rjmp	.+390    	; 0x2be <DIO_INITPIN+0x1fe>
+
+			case PC:
+			clear_bit(DDRC,PIN_NUM);
+ 138:	44 b3       	in	r20, 0x14	; 20
+ 13a:	21 e0       	ldi	r18, 0x01	; 1
+ 13c:	30 e0       	ldi	r19, 0x00	; 0
+ 13e:	b9 01       	movw	r22, r18
+ 140:	02 c0       	rjmp	.+4      	; 0x146 <DIO_INITPIN+0x86>
+ 142:	66 0f       	add	r22, r22
+ 144:	77 1f       	adc	r23, r23
+ 146:	8a 95       	dec	r24
+ 148:	e2 f7       	brpl	.-8      	; 0x142 <DIO_INITPIN+0x82>
+ 14a:	cb 01       	movw	r24, r22
+ 14c:	80 95       	com	r24
+ 14e:	94 2f       	mov	r25, r20
+ 150:	98 23       	and	r25, r24
+ 152:	94 bb       	out	0x14, r25	; 20
+			clear_bit(PORTC,PIN_NUM);
+ 154:	95 b3       	in	r25, 0x15	; 21
+ 156:	89 23       	and	r24, r25
+ 158:	85 bb       	out	0x15, r24	; 21
+			break;
+ 15a:	b1 c0       	rjmp	.+354    	; 0x2be <DIO_INITPIN+0x1fe>
+
+			case PD:
+			clear_bit(DDRD,PIN_NUM);
+ 15c:	41 b3       	in	r20, 0x11	; 17
+ 15e:	21 e0       	ldi	r18, 0x01	; 1
+ 160:	30 e0       	ldi	r19, 0x00	; 0
+ 162:	b9 01       	movw	r22, r18
+ 164:	02 c0       	rjmp	.+4      	; 0x16a <DIO_INITPIN+0xaa>
+ 166:	66 0f       	add	r22, r22
+ 168:	77 1f       	adc	r23, r23
+ 16a:	8a 95       	dec	r24
+ 16c:	e2 f7       	brpl	.-8      	; 0x166 <DIO_INITPIN+0xa6>
+ 16e:	cb 01       	movw	r24, r22
+ 170:	80 95       	com	r24
+ 172:	94 2f       	mov	r25, r20
+ 174:	98 23       	and	r25, r24
+ 176:	91 bb       	out	0x11, r25	; 17
+			clear_bit(PORTD,PIN_NUM);
+ 178:	92 b3       	in	r25, 0x12	; 18
+ 17a:	89 23       	and	r24, r25
+ 17c:	82 bb       	out	0x12, r24	; 18
+			break;
+ 17e:	9f c0       	rjmp	.+318    	; 0x2be <DIO_INITPIN+0x1fe>
+		}
+		break;
+		
+		case INPLUP:
+		switch(PORT)
+ 180:	91 30       	cpi	r25, 0x01	; 1
+ 182:	c1 f0       	breq	.+48     	; 0x1b4 <DIO_INITPIN+0xf4>
+ 184:	28 f0       	brcs	.+10     	; 0x190 <DIO_INITPIN+0xd0>
+ 186:	92 30       	cpi	r25, 0x02	; 2
+ 188:	39 f1       	breq	.+78     	; 0x1d8 <DIO_INITPIN+0x118>
+ 18a:	93 30       	cpi	r25, 0x03	; 3
+ 18c:	b9 f1       	breq	.+110    	; 0x1fc <DIO_INITPIN+0x13c>
+ 18e:	97 c0       	rjmp	.+302    	; 0x2be <DIO_INITPIN+0x1fe>
+		{
+			case PA:
+			clear_bit(DDRA,PIN_NUM);
+ 190:	4a b3       	in	r20, 0x1a	; 26
+ 192:	21 e0       	ldi	r18, 0x01	; 1
+ 194:	30 e0       	ldi	r19, 0x00	; 0
+ 196:	b9 01       	movw	r22, r18
+ 198:	02 c0       	rjmp	.+4      	; 0x19e <DIO_INITPIN+0xde>
+ 19a:	66 0f       	add	r22, r22
+ 19c:	77 1f       	adc	r23, r23
+ 19e:	8a 95       	dec	r24
+ 1a0:	e2 f7       	brpl	.-8      	; 0x19a <DIO_INITPIN+0xda>
+ 1a2:	cb 01       	movw	r24, r22
+ 1a4:	96 2f       	mov	r25, r22
+ 1a6:	90 95       	com	r25
+ 1a8:	94 23       	and	r25, r20
+ 1aa:	9a bb       	out	0x1a, r25	; 26
+			set_bit(PORTA,PIN_NUM);
+ 1ac:	9b b3       	in	r25, 0x1b	; 27
+ 1ae:	89 2b       	or	r24, r25
+ 1b0:	8b bb       	out	0x1b, r24	; 27
+			break;
+ 1b2:	85 c0       	rjmp	.+266    	; 0x2be <DIO_INITPIN+0x1fe>
+			
+			case PB:
+			clear_bit(DDRB,PIN_NUM);
+ 1b4:	47 b3       	in	r20, 0x17	; 23
+ 1b6:	21 e0       	ldi	r18, 0x01	; 1
+ 1b8:	30 e0       	ldi	r19, 0x00	; 0
+ 1ba:	b9 01       	movw	r22, r18
+ 1bc:	02 c0       	rjmp	.+4      	; 0x1c2 <DIO_INITPIN+0x102>
+ 1be:	66 0f       	add	r22, r22
+ 1c0:	77 1f       	adc	r23, r23
+ 1c2:	8a 95       	dec	r24
+ 1c4:	e2 f7       	brpl	.-8      	; 0x1be <DIO_INITPIN+0xfe>
+ 1c6:	cb 01       	movw	r24, r22
+ 1c8:	96 2f       	mov	r25, r22
+ 1ca:	90 95       	com	r25
+ 1cc:	94 23       	and	r25, r20
+ 1ce:	97 bb       	out	0x17, r25	; 23
+			set_bit(PORTB,PIN_NUM);
+ 1d0:	98 b3       	in	r25, 0x18	; 24
+ 1d2:	89 2b       	or	r24, r25
+ 1d4:	88 bb       	out	0x18, r24	; 24
+			break;
+ 1d6:	73 c0       	rjmp	.+230    	; 0x2be <DIO_INITPIN+0x1fe>
+
+			case PC:
+			clear_bit(DDRC,PIN_NUM);
+ 1d8:	44 b3       	in	r20, 0x14	; 20
+ 1da:	21 e0       	ldi	r18, 0x01	; 1
+ 1dc:	30 e0       	ldi	r19, 0x00	; 0
+ 1de:	b9 01       	movw	r22, r18
+ 1e0:	02 c0       	rjmp	.+4      	; 0x1e6 <DIO_INITPIN+0x126>
+ 1e2:	66 0f       	add	r22, r22
+ 1e4:	77 1f       	adc	r23, r23
+ 1e6:	8a 95       	dec	r24
+ 1e8:	e2 f7       	brpl	.-8      	; 0x1e2 <DIO_INITPIN+0x122>
+ 1ea:	cb 01       	movw	r24, r22
+ 1ec:	96 2f       	mov	r25, r22
+ 1ee:	90 95       	com	r25
+ 1f0:	94 23       	and	r25, r20
+ 1f2:	94 bb       	out	0x14, r25	; 20
+			set_bit(PORTC,PIN_NUM);
+ 1f4:	95 b3       	in	r25, 0x15	; 21
+ 1f6:	89 2b       	or	r24, r25
+ 1f8:	85 bb       	out	0x15, r24	; 21
+			break;
+ 1fa:	61 c0       	rjmp	.+194    	; 0x2be <DIO_INITPIN+0x1fe>
+
+			case PD:
+			clear_bit(DDRD,PIN_NUM);
+ 1fc:	41 b3       	in	r20, 0x11	; 17
+ 1fe:	21 e0       	ldi	r18, 0x01	; 1
+ 200:	30 e0       	ldi	r19, 0x00	; 0
+ 202:	b9 01       	movw	r22, r18
+ 204:	02 c0       	rjmp	.+4      	; 0x20a <DIO_INITPIN+0x14a>
+ 206:	66 0f       	add	r22, r22
+ 208:	77 1f       	adc	r23, r23
+ 20a:	8a 95       	dec	r24
+ 20c:	e2 f7       	brpl	.-8      	; 0x206 <DIO_INITPIN+0x146>
+ 20e:	cb 01       	movw	r24, r22
+ 210:	96 2f       	mov	r25, r22
+ 212:	90 95       	com	r25
+ 214:	94 23       	and	r25, r20
+ 216:	91 bb       	out	0x11, r25	; 17
+			set_bit(PORTD,PIN_NUM);
+ 218:	92 b3       	in	r25, 0x12	; 18
+ 21a:	89 2b       	or	r24, r25
+ 21c:	82 bb       	out	0x12, r24	; 18
+			break;
+ 21e:	4f c0       	rjmp	.+158    	; 0x2be <DIO_INITPIN+0x1fe>
+		}
+		break;
+		return VALID_DIO;
+		
+		case OUTPUT:
+		switch(PORT)
+ 220:	91 30       	cpi	r25, 0x01	; 1
+ 222:	c1 f0       	breq	.+48     	; 0x254 <DIO_INITPIN+0x194>
+ 224:	28 f0       	brcs	.+10     	; 0x230 <DIO_INITPIN+0x170>
+ 226:	92 30       	cpi	r25, 0x02	; 2
+ 228:	39 f1       	breq	.+78     	; 0x278 <DIO_INITPIN+0x1b8>
+ 22a:	93 30       	cpi	r25, 0x03	; 3
+ 22c:	b9 f1       	breq	.+110    	; 0x29c <DIO_INITPIN+0x1dc>
+ 22e:	47 c0       	rjmp	.+142    	; 0x2be <DIO_INITPIN+0x1fe>
+		{
+			case PA:
+			clear_bit(PORTA,PIN_NUM);
+ 230:	4b b3       	in	r20, 0x1b	; 27
+ 232:	21 e0       	ldi	r18, 0x01	; 1
+ 234:	30 e0       	ldi	r19, 0x00	; 0
+ 236:	b9 01       	movw	r22, r18
+ 238:	02 c0       	rjmp	.+4      	; 0x23e <DIO_INITPIN+0x17e>
+ 23a:	66 0f       	add	r22, r22
+ 23c:	77 1f       	adc	r23, r23
+ 23e:	8a 95       	dec	r24
+ 240:	e2 f7       	brpl	.-8      	; 0x23a <DIO_INITPIN+0x17a>
+ 242:	cb 01       	movw	r24, r22
+ 244:	96 2f       	mov	r25, r22
+ 246:	90 95       	com	r25
+ 248:	94 23       	and	r25, r20
+ 24a:	9b bb       	out	0x1b, r25	; 27
+			set_bit(DDRA,PIN_NUM);
+ 24c:	9a b3       	in	r25, 0x1a	; 26
+ 24e:	89 2b       	or	r24, r25
+ 250:	8a bb       	out	0x1a, r24	; 26
+			break;
+ 252:	35 c0       	rjmp	.+106    	; 0x2be <DIO_INITPIN+0x1fe>
+			
+			case PB:
+			clear_bit(PORTB,PIN_NUM);
+ 254:	48 b3       	in	r20, 0x18	; 24
+ 256:	21 e0       	ldi	r18, 0x01	; 1
+ 258:	30 e0       	ldi	r19, 0x00	; 0
+ 25a:	b9 01       	movw	r22, r18
+ 25c:	02 c0       	rjmp	.+4      	; 0x262 <DIO_INITPIN+0x1a2>
+ 25e:	66 0f       	add	r22, r22
+ 260:	77 1f       	adc	r23, r23
+ 262:	8a 95       	dec	r24
+ 264:	e2 f7       	brpl	.-8      	; 0x25e <DIO_INITPIN+0x19e>
+ 266:	cb 01       	movw	r24, r22
+ 268:	96 2f       	mov	r25, r22
+ 26a:	90 95       	com	r25
+ 26c:	94 23       	and	r25, r20
+ 26e:	98 bb       	out	0x18, r25	; 24
+			set_bit(DDRB,PIN_NUM);
+ 270:	97 b3       	in	r25, 0x17	; 23
+ 272:	89 2b       	or	r24, r25
+ 274:	87 bb       	out	0x17, r24	; 23
+			break;
+ 276:	23 c0       	rjmp	.+70     	; 0x2be <DIO_INITPIN+0x1fe>
+
+			case PC:
+			clear_bit(PORTC,PIN_NUM);
+ 278:	45 b3       	in	r20, 0x15	; 21
+ 27a:	21 e0       	ldi	r18, 0x01	; 1
+ 27c:	30 e0       	ldi	r19, 0x00	; 0
+ 27e:	b9 01       	movw	r22, r18
+ 280:	02 c0       	rjmp	.+4      	; 0x286 <DIO_INITPIN+0x1c6>
+ 282:	66 0f       	add	r22, r22
+ 284:	77 1f       	adc	r23, r23
+ 286:	8a 95       	dec	r24
+ 288:	e2 f7       	brpl	.-8      	; 0x282 <DIO_INITPIN+0x1c2>
+ 28a:	cb 01       	movw	r24, r22
+ 28c:	96 2f       	mov	r25, r22
+ 28e:	90 95       	com	r25
+ 290:	94 23       	and	r25, r20
+ 292:	95 bb       	out	0x15, r25	; 21
+			set_bit(DDRC,PIN_NUM);
+ 294:	94 b3       	in	r25, 0x14	; 20
+ 296:	89 2b       	or	r24, r25
+ 298:	84 bb       	out	0x14, r24	; 20
+			break;
+ 29a:	11 c0       	rjmp	.+34     	; 0x2be <DIO_INITPIN+0x1fe>
+
+			case PD:
+			clear_bit(PORTD,PIN_NUM);
+ 29c:	42 b3       	in	r20, 0x12	; 18
+ 29e:	21 e0       	ldi	r18, 0x01	; 1
+ 2a0:	30 e0       	ldi	r19, 0x00	; 0
+ 2a2:	b9 01       	movw	r22, r18
+ 2a4:	02 c0       	rjmp	.+4      	; 0x2aa <DIO_INITPIN+0x1ea>
+ 2a6:	66 0f       	add	r22, r22
+ 2a8:	77 1f       	adc	r23, r23
+ 2aa:	8a 95       	dec	r24
+ 2ac:	e2 f7       	brpl	.-8      	; 0x2a6 <DIO_INITPIN+0x1e6>
+ 2ae:	cb 01       	movw	r24, r22
+ 2b0:	96 2f       	mov	r25, r22
+ 2b2:	90 95       	com	r25
+ 2b4:	94 23       	and	r25, r20
+ 2b6:	92 bb       	out	0x12, r25	; 18
+			set_bit(DDRD,PIN_NUM);
+ 2b8:	91 b3       	in	r25, 0x11	; 17
+ 2ba:	89 2b       	or	r24, r25
+ 2bc:	81 bb       	out	0x11, r24	; 17
+		break;
+		return VALID_DIO;
+
+	}
+		}
+}
+ 2be:	08 95       	ret
+ 2c0:	82 e0       	ldi	r24, 0x02	; 2
+ 2c2:	08 95       	ret
+
+000002c4 <DIO_WRITEPIN>:
+DIO_ERROR_TYPE DIO_WRITEPIN(DIO_PIN_TYPE PIN,DIO_VOLTAGE_TYPE VOLTAGE)
+{
+	
+	DIO_PIN_TYPE PIN_NUM;
+	DIO_PORT_TYPE PORT;
+	PORT=PIN/8;
+ 2c4:	98 2f       	mov	r25, r24
+ 2c6:	96 95       	lsr	r25
+ 2c8:	96 95       	lsr	r25
+ 2ca:	96 95       	lsr	r25
+	PIN_NUM=PIN%8;
+	if(PORT>4)
+ 2cc:	95 30       	cpi	r25, 0x05	; 5
+ 2ce:	08 f0       	brcs	.+2      	; 0x2d2 <DIO_WRITEPIN+0xe>
+ 2d0:	8e c0       	rjmp	.+284    	; 0x3ee <DIO_WRITEPIN+0x12a>
+	}
+	else if(PIN_NUM>32)
+	{
+		return INVALID_PIN_NUMBER;
+	}
+	else if(VOLTAGE>2)
+ 2d2:	63 30       	cpi	r22, 0x03	; 3
+ 2d4:	08 f0       	brcs	.+2      	; 0x2d8 <DIO_WRITEPIN+0x14>
+ 2d6:	8d c0       	rjmp	.+282    	; 0x3f2 <DIO_WRITEPIN+0x12e>
+{
+	
+	DIO_PIN_TYPE PIN_NUM;
+	DIO_PORT_TYPE PORT;
+	PORT=PIN/8;
+	PIN_NUM=PIN%8;
+ 2d8:	87 70       	andi	r24, 0x07	; 7
+		return INVALID_VOLTAGE;
+	}
+	else 
+	{
+	
+	if(VOLTAGE==HIGH)
+ 2da:	61 30       	cpi	r22, 0x01	; 1
+ 2dc:	09 f0       	breq	.+2      	; 0x2e0 <DIO_WRITEPIN+0x1c>
+ 2de:	40 c0       	rjmp	.+128    	; 0x360 <DIO_WRITEPIN+0x9c>
+	{
+		switch(PORT)
+ 2e0:	91 30       	cpi	r25, 0x01	; 1
+ 2e2:	a1 f0       	breq	.+40     	; 0x30c <DIO_WRITEPIN+0x48>
+ 2e4:	28 f0       	brcs	.+10     	; 0x2f0 <DIO_WRITEPIN+0x2c>
+ 2e6:	92 30       	cpi	r25, 0x02	; 2
+ 2e8:	f9 f0       	breq	.+62     	; 0x328 <DIO_WRITEPIN+0x64>
+ 2ea:	93 30       	cpi	r25, 0x03	; 3
+ 2ec:	59 f1       	breq	.+86     	; 0x344 <DIO_WRITEPIN+0x80>
+ 2ee:	83 c0       	rjmp	.+262    	; 0x3f6 <DIO_WRITEPIN+0x132>
+		{
+			case PA:
+			set_bit(PORTA,PIN_NUM);
+ 2f0:	4b b3       	in	r20, 0x1b	; 27
+ 2f2:	21 e0       	ldi	r18, 0x01	; 1
+ 2f4:	30 e0       	ldi	r19, 0x00	; 0
+ 2f6:	b9 01       	movw	r22, r18
+ 2f8:	02 c0       	rjmp	.+4      	; 0x2fe <DIO_WRITEPIN+0x3a>
+ 2fa:	66 0f       	add	r22, r22
+ 2fc:	77 1f       	adc	r23, r23
+ 2fe:	8a 95       	dec	r24
+ 300:	e2 f7       	brpl	.-8      	; 0x2fa <DIO_WRITEPIN+0x36>
+ 302:	cb 01       	movw	r24, r22
+ 304:	84 2b       	or	r24, r20
+ 306:	8b bb       	out	0x1b, r24	; 27
+			case PD:
+			set_bit(PORTD,PIN_NUM);
+			break;
+
+		}
+		return VALID_DIO;
+ 308:	80 e0       	ldi	r24, 0x00	; 0
+	{
+		switch(PORT)
+		{
+			case PA:
+			set_bit(PORTA,PIN_NUM);
+			break;
+ 30a:	08 95       	ret
+			case PB:
+			set_bit(PORTB,PIN_NUM);
+ 30c:	48 b3       	in	r20, 0x18	; 24
+ 30e:	21 e0       	ldi	r18, 0x01	; 1
+ 310:	30 e0       	ldi	r19, 0x00	; 0
+ 312:	b9 01       	movw	r22, r18
+ 314:	02 c0       	rjmp	.+4      	; 0x31a <DIO_WRITEPIN+0x56>
+ 316:	66 0f       	add	r22, r22
+ 318:	77 1f       	adc	r23, r23
+ 31a:	8a 95       	dec	r24
+ 31c:	e2 f7       	brpl	.-8      	; 0x316 <DIO_WRITEPIN+0x52>
+ 31e:	cb 01       	movw	r24, r22
+ 320:	84 2b       	or	r24, r20
+ 322:	88 bb       	out	0x18, r24	; 24
+			case PD:
+			set_bit(PORTD,PIN_NUM);
+			break;
+
+		}
+		return VALID_DIO;
+ 324:	80 e0       	ldi	r24, 0x00	; 0
+			case PA:
+			set_bit(PORTA,PIN_NUM);
+			break;
+			case PB:
+			set_bit(PORTB,PIN_NUM);
+			break;
+ 326:	08 95       	ret
+			case PC:
+			set_bit(PORTC,PIN_NUM);
+ 328:	45 b3       	in	r20, 0x15	; 21
+ 32a:	21 e0       	ldi	r18, 0x01	; 1
+ 32c:	30 e0       	ldi	r19, 0x00	; 0
+ 32e:	b9 01       	movw	r22, r18
+ 330:	02 c0       	rjmp	.+4      	; 0x336 <DIO_WRITEPIN+0x72>
+ 332:	66 0f       	add	r22, r22
+ 334:	77 1f       	adc	r23, r23
+ 336:	8a 95       	dec	r24
+ 338:	e2 f7       	brpl	.-8      	; 0x332 <DIO_WRITEPIN+0x6e>
+ 33a:	cb 01       	movw	r24, r22
+ 33c:	84 2b       	or	r24, r20
+ 33e:	85 bb       	out	0x15, r24	; 21
+			case PD:
+			set_bit(PORTD,PIN_NUM);
+			break;
+
+		}
+		return VALID_DIO;
+ 340:	80 e0       	ldi	r24, 0x00	; 0
+			case PB:
+			set_bit(PORTB,PIN_NUM);
+			break;
+			case PC:
+			set_bit(PORTC,PIN_NUM);
+			break;
+ 342:	08 95       	ret
+			case PD:
+			set_bit(PORTD,PIN_NUM);
+ 344:	42 b3       	in	r20, 0x12	; 18
+ 346:	21 e0       	ldi	r18, 0x01	; 1
+ 348:	30 e0       	ldi	r19, 0x00	; 0
+ 34a:	b9 01       	movw	r22, r18
+ 34c:	02 c0       	rjmp	.+4      	; 0x352 <DIO_WRITEPIN+0x8e>
+ 34e:	66 0f       	add	r22, r22
+ 350:	77 1f       	adc	r23, r23
+ 352:	8a 95       	dec	r24
+ 354:	e2 f7       	brpl	.-8      	; 0x34e <DIO_WRITEPIN+0x8a>
+ 356:	cb 01       	movw	r24, r22
+ 358:	84 2b       	or	r24, r20
+ 35a:	82 bb       	out	0x12, r24	; 18
+			break;
+
+		}
+		return VALID_DIO;
+ 35c:	80 e0       	ldi	r24, 0x00	; 0
+			case PC:
+			set_bit(PORTC,PIN_NUM);
+			break;
+			case PD:
+			set_bit(PORTD,PIN_NUM);
+			break;
+ 35e:	08 95       	ret
+		}
+		return VALID_DIO;
+	}
+
+
+	else if(VOLTAGE==LOW)
+ 360:	61 11       	cpse	r22, r1
+ 362:	44 c0       	rjmp	.+136    	; 0x3ec <DIO_WRITEPIN+0x128>
+	{
+		switch(PORT)
+ 364:	91 30       	cpi	r25, 0x01	; 1
+ 366:	a9 f0       	breq	.+42     	; 0x392 <DIO_WRITEPIN+0xce>
+ 368:	28 f0       	brcs	.+10     	; 0x374 <DIO_WRITEPIN+0xb0>
+ 36a:	92 30       	cpi	r25, 0x02	; 2
+ 36c:	09 f1       	breq	.+66     	; 0x3b0 <DIO_WRITEPIN+0xec>
+ 36e:	93 30       	cpi	r25, 0x03	; 3
+ 370:	71 f1       	breq	.+92     	; 0x3ce <DIO_WRITEPIN+0x10a>
+ 372:	43 c0       	rjmp	.+134    	; 0x3fa <DIO_WRITEPIN+0x136>
+		{
+			case PA:
+			clear_bit(PORTA,PIN_NUM);
+ 374:	4b b3       	in	r20, 0x1b	; 27
+ 376:	21 e0       	ldi	r18, 0x01	; 1
+ 378:	30 e0       	ldi	r19, 0x00	; 0
+ 37a:	b9 01       	movw	r22, r18
+ 37c:	02 c0       	rjmp	.+4      	; 0x382 <DIO_WRITEPIN+0xbe>
+ 37e:	66 0f       	add	r22, r22
+ 380:	77 1f       	adc	r23, r23
+ 382:	8a 95       	dec	r24
+ 384:	e2 f7       	brpl	.-8      	; 0x37e <DIO_WRITEPIN+0xba>
+ 386:	cb 01       	movw	r24, r22
+ 388:	80 95       	com	r24
+ 38a:	84 23       	and	r24, r20
+ 38c:	8b bb       	out	0x1b, r24	; 27
+			case PD:
+			clear_bit(PORTD,PIN_NUM);
+			break;
+
+		}
+		return VALID_DIO;
+ 38e:	80 e0       	ldi	r24, 0x00	; 0
+	{
+		switch(PORT)
+		{
+			case PA:
+			clear_bit(PORTA,PIN_NUM);
+			break;
+ 390:	08 95       	ret
+			case PB:
+			clear_bit(PORTB,PIN_NUM);
+ 392:	48 b3       	in	r20, 0x18	; 24
+ 394:	21 e0       	ldi	r18, 0x01	; 1
+ 396:	30 e0       	ldi	r19, 0x00	; 0
+ 398:	b9 01       	movw	r22, r18
+ 39a:	02 c0       	rjmp	.+4      	; 0x3a0 <DIO_WRITEPIN+0xdc>
+ 39c:	66 0f       	add	r22, r22
+ 39e:	77 1f       	adc	r23, r23
+ 3a0:	8a 95       	dec	r24
+ 3a2:	e2 f7       	brpl	.-8      	; 0x39c <DIO_WRITEPIN+0xd8>
+ 3a4:	cb 01       	movw	r24, r22
+ 3a6:	80 95       	com	r24
+ 3a8:	84 23       	and	r24, r20
+ 3aa:	88 bb       	out	0x18, r24	; 24
+			case PD:
+			clear_bit(PORTD,PIN_NUM);
+			break;
+
+		}
+		return VALID_DIO;
+ 3ac:	80 e0       	ldi	r24, 0x00	; 0
+			case PA:
+			clear_bit(PORTA,PIN_NUM);
+			break;
+			case PB:
+			clear_bit(PORTB,PIN_NUM);
+			break;
+ 3ae:	08 95       	ret
+			case PC:
+			clear_bit(PORTC,PIN_NUM);
+ 3b0:	45 b3       	in	r20, 0x15	; 21
+ 3b2:	21 e0       	ldi	r18, 0x01	; 1
+ 3b4:	30 e0       	ldi	r19, 0x00	; 0
+ 3b6:	b9 01       	movw	r22, r18
+ 3b8:	02 c0       	rjmp	.+4      	; 0x3be <DIO_WRITEPIN+0xfa>
+ 3ba:	66 0f       	add	r22, r22
+ 3bc:	77 1f       	adc	r23, r23
+ 3be:	8a 95       	dec	r24
+ 3c0:	e2 f7       	brpl	.-8      	; 0x3ba <DIO_WRITEPIN+0xf6>
+ 3c2:	cb 01       	movw	r24, r22
+ 3c4:	80 95       	com	r24
+ 3c6:	84 23       	and	r24, r20
+ 3c8:	85 bb       	out	0x15, r24	; 21
+			case PD:
+			clear_bit(PORTD,PIN_NUM);
+			break;
+
+		}
+		return VALID_DIO;
+ 3ca:	80 e0       	ldi	r24, 0x00	; 0
+			case PB:
+			clear_bit(PORTB,PIN_NUM);
+			break;
+			case PC:
+			clear_bit(PORTC,PIN_NUM);
+			break;
+ 3cc:	08 95       	ret
+			case PD:
+			clear_bit(PORTD,PIN_NUM);
+ 3ce:	42 b3       	in	r20, 0x12	; 18
+ 3d0:	21 e0       	ldi	r18, 0x01	; 1
+ 3d2:	30 e0       	ldi	r19, 0x00	; 0
+ 3d4:	b9 01       	movw	r22, r18
+ 3d6:	02 c0       	rjmp	.+4      	; 0x3dc <DIO_WRITEPIN+0x118>
+ 3d8:	66 0f       	add	r22, r22
+ 3da:	77 1f       	adc	r23, r23
+ 3dc:	8a 95       	dec	r24
+ 3de:	e2 f7       	brpl	.-8      	; 0x3d8 <DIO_WRITEPIN+0x114>
+ 3e0:	cb 01       	movw	r24, r22
+ 3e2:	80 95       	com	r24
+ 3e4:	84 23       	and	r24, r20
+ 3e6:	82 bb       	out	0x12, r24	; 18
+			break;
+
+		}
+		return VALID_DIO;
+ 3e8:	80 e0       	ldi	r24, 0x00	; 0
+			case PC:
+			clear_bit(PORTC,PIN_NUM);
+			break;
+			case PD:
+			clear_bit(PORTD,PIN_NUM);
+			break;
+ 3ea:	08 95       	ret
+
+		}
+		return VALID_DIO;
+	}
+}
+}
+ 3ec:	08 95       	ret
+	DIO_PORT_TYPE PORT;
+	PORT=PIN/8;
+	PIN_NUM=PIN%8;
+	if(PORT>4)
+	{
+		return INVALID_PORT;
+ 3ee:	82 e0       	ldi	r24, 0x02	; 2
+ 3f0:	08 95       	ret
+	{
+		return INVALID_PIN_NUMBER;
+	}
+	else if(VOLTAGE>2)
+	{
+		return INVALID_VOLTAGE;
+ 3f2:	83 e0       	ldi	r24, 0x03	; 3
+ 3f4:	08 95       	ret
+			case PD:
+			set_bit(PORTD,PIN_NUM);
+			break;
+
+		}
+		return VALID_DIO;
+ 3f6:	80 e0       	ldi	r24, 0x00	; 0
+ 3f8:	08 95       	ret
+			case PD:
+			clear_bit(PORTD,PIN_NUM);
+			break;
+
+		}
+		return VALID_DIO;
+ 3fa:	80 e0       	ldi	r24, 0x00	; 0
+	}
+}
+}
+ 3fc:	08 95       	ret
+
+000003fe <EXI_Enable>:
+		clear_bit(GICR,INT1); break;
+		case EX_INT2:
+		clear_bit(GICR,INT2); break;
+	}
+	
+}
+ 3fe:	81 30       	cpi	r24, 0x01	; 1
+ 400:	41 f0       	breq	.+16     	; 0x412 <__LOCK_REGION_LENGTH__+0x12>
+ 402:	18 f0       	brcs	.+6      	; 0x40a <__LOCK_REGION_LENGTH__+0xa>
+ 404:	82 30       	cpi	r24, 0x02	; 2
+ 406:	49 f0       	breq	.+18     	; 0x41a <__LOCK_REGION_LENGTH__+0x1a>
+ 408:	08 95       	ret
+ 40a:	8b b7       	in	r24, 0x3b	; 59
+ 40c:	80 64       	ori	r24, 0x40	; 64
+ 40e:	8b bf       	out	0x3b, r24	; 59
+ 410:	08 95       	ret
+ 412:	8b b7       	in	r24, 0x3b	; 59
+ 414:	80 68       	ori	r24, 0x80	; 128
+ 416:	8b bf       	out	0x3b, r24	; 59
+ 418:	08 95       	ret
+ 41a:	8b b7       	in	r24, 0x3b	; 59
+ 41c:	80 62       	ori	r24, 0x20	; 32
+ 41e:	8b bf       	out	0x3b, r24	; 59
+ 420:	08 95       	ret
+
+00000422 <EXI_TriggerEdge>:
+
+/*it defines the trigger state of the interrupt*/
+INTERRUPT_ERROR_TYPE EXI_TriggerEdge (EXInterruptSource_type interrupt, TriggerEdge_type edge )
+{
+
+	switch(interrupt)
+ 422:	81 30       	cpi	r24, 0x01	; 1
+ 424:	49 f1       	breq	.+82     	; 0x478 <EXI_TriggerEdge+0x56>
+ 426:	20 f0       	brcs	.+8      	; 0x430 <EXI_TriggerEdge+0xe>
+ 428:	82 30       	cpi	r24, 0x02	; 2
+ 42a:	09 f4       	brne	.+2      	; 0x42e <EXI_TriggerEdge+0xc>
+ 42c:	49 c0       	rjmp	.+146    	; 0x4c0 <EXI_TriggerEdge+0x9e>
+ 42e:	08 95       	ret
+	{
+		case EX_INT0:
+		switch(edge)
+ 430:	61 30       	cpi	r22, 0x01	; 1
+ 432:	69 f0       	breq	.+26     	; 0x44e <EXI_TriggerEdge+0x2c>
+ 434:	28 f0       	brcs	.+10     	; 0x440 <EXI_TriggerEdge+0x1e>
+ 436:	62 30       	cpi	r22, 0x02	; 2
+ 438:	89 f0       	breq	.+34     	; 0x45c <EXI_TriggerEdge+0x3a>
+ 43a:	63 30       	cpi	r22, 0x03	; 3
+ 43c:	b1 f0       	breq	.+44     	; 0x46a <EXI_TriggerEdge+0x48>
+ 43e:	08 95       	ret
+		{
+			case LOW_LEVEL:
+			clear_bit(MCUCR,ISC00);
+ 440:	85 b7       	in	r24, 0x35	; 53
+ 442:	8e 7f       	andi	r24, 0xFE	; 254
+ 444:	85 bf       	out	0x35, r24	; 53
+			clear_bit(MCUCR,ISC01);
+ 446:	85 b7       	in	r24, 0x35	; 53
+ 448:	8d 7f       	andi	r24, 0xFD	; 253
+ 44a:	85 bf       	out	0x35, r24	; 53
+			break;
+ 44c:	08 95       	ret
+			case ANY_LOGIC_CHANGE:
+			set_bit(MCUCR,ISC00);
+ 44e:	85 b7       	in	r24, 0x35	; 53
+ 450:	81 60       	ori	r24, 0x01	; 1
+ 452:	85 bf       	out	0x35, r24	; 53
+			clear_bit(MCUCR,ISC01); 
+ 454:	85 b7       	in	r24, 0x35	; 53
+ 456:	8d 7f       	andi	r24, 0xFD	; 253
+ 458:	85 bf       	out	0x35, r24	; 53
+			break;
+ 45a:	08 95       	ret
+			case FALLING_EDGE:
+			clear_bit(MCUCR,ISC00);
+ 45c:	85 b7       	in	r24, 0x35	; 53
+ 45e:	8e 7f       	andi	r24, 0xFE	; 254
+ 460:	85 bf       	out	0x35, r24	; 53
+			set_bit(MCUCR,ISC01);
+ 462:	85 b7       	in	r24, 0x35	; 53
+ 464:	82 60       	ori	r24, 0x02	; 2
+ 466:	85 bf       	out	0x35, r24	; 53
+			 break;
+ 468:	08 95       	ret
+			case RISING_EDGE:
+			set_bit(MCUCR,ISC00);
+ 46a:	85 b7       	in	r24, 0x35	; 53
+ 46c:	81 60       	ori	r24, 0x01	; 1
+ 46e:	85 bf       	out	0x35, r24	; 53
+			set_bit(MCUCR,ISC01);
+ 470:	85 b7       	in	r24, 0x35	; 53
+ 472:	82 60       	ori	r24, 0x02	; 2
+ 474:	85 bf       	out	0x35, r24	; 53
+			 break;
+ 476:	08 95       	ret
+		}
+		break;
+		case EX_INT1:
+		switch(edge)
+ 478:	61 30       	cpi	r22, 0x01	; 1
+ 47a:	69 f0       	breq	.+26     	; 0x496 <EXI_TriggerEdge+0x74>
+ 47c:	28 f0       	brcs	.+10     	; 0x488 <EXI_TriggerEdge+0x66>
+ 47e:	62 30       	cpi	r22, 0x02	; 2
+ 480:	89 f0       	breq	.+34     	; 0x4a4 <EXI_TriggerEdge+0x82>
+ 482:	63 30       	cpi	r22, 0x03	; 3
+ 484:	b1 f0       	breq	.+44     	; 0x4b2 <EXI_TriggerEdge+0x90>
+ 486:	08 95       	ret
+		{
+			case LOW_LEVEL:
+			clear_bit(MCUCR,ISC10);
+ 488:	85 b7       	in	r24, 0x35	; 53
+ 48a:	8b 7f       	andi	r24, 0xFB	; 251
+ 48c:	85 bf       	out	0x35, r24	; 53
+			clear_bit(MCUCR,ISC11); break;
+ 48e:	85 b7       	in	r24, 0x35	; 53
+ 490:	87 7f       	andi	r24, 0xF7	; 247
+ 492:	85 bf       	out	0x35, r24	; 53
+ 494:	08 95       	ret
+			case ANY_LOGIC_CHANGE:
+			set_bit(MCUCR,ISC10);
+ 496:	85 b7       	in	r24, 0x35	; 53
+ 498:	84 60       	ori	r24, 0x04	; 4
+ 49a:	85 bf       	out	0x35, r24	; 53
+			clear_bit(MCUCR,ISC11); break;
+ 49c:	85 b7       	in	r24, 0x35	; 53
+ 49e:	87 7f       	andi	r24, 0xF7	; 247
+ 4a0:	85 bf       	out	0x35, r24	; 53
+ 4a2:	08 95       	ret
+			case FALLING_EDGE:
+			clear_bit(MCUCR,ISC10);
+ 4a4:	85 b7       	in	r24, 0x35	; 53
+ 4a6:	8b 7f       	andi	r24, 0xFB	; 251
+ 4a8:	85 bf       	out	0x35, r24	; 53
+			set_bit(MCUCR,ISC11); break;
+ 4aa:	85 b7       	in	r24, 0x35	; 53
+ 4ac:	88 60       	ori	r24, 0x08	; 8
+ 4ae:	85 bf       	out	0x35, r24	; 53
+ 4b0:	08 95       	ret
+			case RISING_EDGE:
+			set_bit(MCUCR,ISC10);
+ 4b2:	85 b7       	in	r24, 0x35	; 53
+ 4b4:	84 60       	ori	r24, 0x04	; 4
+ 4b6:	85 bf       	out	0x35, r24	; 53
+			set_bit(MCUCR,ISC11); break;
+ 4b8:	85 b7       	in	r24, 0x35	; 53
+ 4ba:	88 60       	ori	r24, 0x08	; 8
+ 4bc:	85 bf       	out	0x35, r24	; 53
+ 4be:	08 95       	ret
+		}
+		break;
+		case EX_INT2:
+		switch(edge)
+ 4c0:	62 30       	cpi	r22, 0x02	; 2
+ 4c2:	19 f0       	breq	.+6      	; 0x4ca <EXI_TriggerEdge+0xa8>
+ 4c4:	63 30       	cpi	r22, 0x03	; 3
+ 4c6:	29 f0       	breq	.+10     	; 0x4d2 <EXI_TriggerEdge+0xb0>
+ 4c8:	08 95       	ret
+			break;
+			case  ANY_LOGIC_CHANGE:
+		 /*DO nothing OR set default */
+			break;
+			case FALLING_EDGE:
+			clear_bit(MCUCSR,ISC2);
+ 4ca:	84 b7       	in	r24, 0x34	; 52
+ 4cc:	8f 7b       	andi	r24, 0xBF	; 191
+ 4ce:	84 bf       	out	0x34, r24	; 52
+			 break;
+ 4d0:	08 95       	ret
+			case RISING_EDGE:
+			set_bit(MCUCSR,ISC2); 
+ 4d2:	84 b7       	in	r24, 0x34	; 52
+ 4d4:	80 64       	ori	r24, 0x40	; 64
+ 4d6:	84 bf       	out	0x34, r24	; 52
+			break;
+		}
+		break;
+	}
+	
+}
+ 4d8:	08 95       	ret
+
+000004da <__vector_1>:
+}
+*/
+
+
+ISR(INT0_VECTOR)
+{
+ 4da:	1f 92       	push	r1
+ 4dc:	0f 92       	push	r0
+ 4de:	0f b6       	in	r0, 0x3f	; 63
+ 4e0:	0f 92       	push	r0
+ 4e2:	11 24       	eor	r1, r1
+ 4e4:	2f 93       	push	r18
+ 4e6:	3f 93       	push	r19
+ 4e8:	4f 93       	push	r20
+ 4ea:	5f 93       	push	r21
+ 4ec:	6f 93       	push	r22
+ 4ee:	7f 93       	push	r23
+ 4f0:	8f 93       	push	r24
+ 4f2:	9f 93       	push	r25
+ 4f4:	af 93       	push	r26
+ 4f6:	bf 93       	push	r27
+ 4f8:	ef 93       	push	r30
+ 4fa:	ff 93       	push	r31
+uint8_t static FLAG=0;                      
+	if(FLAG==0)
+ 4fc:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <_edata>
+ 500:	81 11       	cpse	r24, r1
+ 502:	09 c0       	rjmp	.+18     	; 0x516 <__vector_1+0x3c>
+	{
+		DIO_WRITEPIN(pina0,HIGH);
+ 504:	61 e0       	ldi	r22, 0x01	; 1
+ 506:	0e 94 62 01 	call	0x2c4	; 0x2c4 <DIO_WRITEPIN>
+		FLAG++;
+ 50a:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <_edata>
+ 50e:	8f 5f       	subi	r24, 0xFF	; 255
+ 510:	80 93 60 00 	sts	0x0060, r24	; 0x800060 <_edata>
+ 514:	4d c0       	rjmp	.+154    	; 0x5b0 <__vector_1+0xd6>
+		//_delay_ms(300);
+	}
+	else if(FLAG==1)
+ 516:	81 30       	cpi	r24, 0x01	; 1
+ 518:	49 f4       	brne	.+18     	; 0x52c <__vector_1+0x52>
+	{
+		DIO_WRITEPIN(pina1,HIGH);
+ 51a:	61 e0       	ldi	r22, 0x01	; 1
+ 51c:	0e 94 62 01 	call	0x2c4	; 0x2c4 <DIO_WRITEPIN>
+		//_delay_ms(300);
+		FLAG++;
+ 520:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <_edata>
+ 524:	8f 5f       	subi	r24, 0xFF	; 255
+ 526:	80 93 60 00 	sts	0x0060, r24	; 0x800060 <_edata>
+ 52a:	42 c0       	rjmp	.+132    	; 0x5b0 <__vector_1+0xd6>
+	}
+	else if(FLAG==2)
+ 52c:	82 30       	cpi	r24, 0x02	; 2
+ 52e:	49 f4       	brne	.+18     	; 0x542 <__vector_1+0x68>
+	{
+		DIO_WRITEPIN(pina2,HIGH);
+ 530:	61 e0       	ldi	r22, 0x01	; 1
+ 532:	0e 94 62 01 	call	0x2c4	; 0x2c4 <DIO_WRITEPIN>
+		//_delay_ms(300);
+		FLAG++;
+ 536:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <_edata>
+ 53a:	8f 5f       	subi	r24, 0xFF	; 255
+ 53c:	80 93 60 00 	sts	0x0060, r24	; 0x800060 <_edata>
+ 540:	37 c0       	rjmp	.+110    	; 0x5b0 <__vector_1+0xd6>
+	}
+	else if(FLAG==3)
+ 542:	83 30       	cpi	r24, 0x03	; 3
+ 544:	49 f4       	brne	.+18     	; 0x558 <__vector_1+0x7e>
+	{
+		DIO_WRITEPIN(pina3,HIGH);
+ 546:	61 e0       	ldi	r22, 0x01	; 1
+ 548:	0e 94 62 01 	call	0x2c4	; 0x2c4 <DIO_WRITEPIN>
+		//_delay_ms(300);
+		FLAG++;
+ 54c:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <_edata>
+ 550:	8f 5f       	subi	r24, 0xFF	; 255
+ 552:	80 93 60 00 	sts	0x0060, r24	; 0x800060 <_edata>
+ 556:	2c c0       	rjmp	.+88     	; 0x5b0 <__vector_1+0xd6>
+	}
+	else if(FLAG==4)
+ 558:	84 30       	cpi	r24, 0x04	; 4
+ 55a:	51 f4       	brne	.+20     	; 0x570 <__vector_1+0x96>
+	{
+		DIO_WRITEPIN(pina0,LOW);
+ 55c:	60 e0       	ldi	r22, 0x00	; 0
+ 55e:	80 e0       	ldi	r24, 0x00	; 0
+ 560:	0e 94 62 01 	call	0x2c4	; 0x2c4 <DIO_WRITEPIN>
+		//_delay_ms(300);
+		FLAG++;
+ 564:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <_edata>
+ 568:	8f 5f       	subi	r24, 0xFF	; 255
+ 56a:	80 93 60 00 	sts	0x0060, r24	; 0x800060 <_edata>
+ 56e:	20 c0       	rjmp	.+64     	; 0x5b0 <__vector_1+0xd6>
+	}
+	else if(FLAG==5)
+ 570:	85 30       	cpi	r24, 0x05	; 5
+ 572:	51 f4       	brne	.+20     	; 0x588 <__vector_1+0xae>
+	{
+		DIO_WRITEPIN(pina1,LOW);
+ 574:	60 e0       	ldi	r22, 0x00	; 0
+ 576:	81 e0       	ldi	r24, 0x01	; 1
+ 578:	0e 94 62 01 	call	0x2c4	; 0x2c4 <DIO_WRITEPIN>
+		//_delay_ms(300);
+		FLAG++;
+ 57c:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <_edata>
+ 580:	8f 5f       	subi	r24, 0xFF	; 255
+ 582:	80 93 60 00 	sts	0x0060, r24	; 0x800060 <_edata>
+ 586:	14 c0       	rjmp	.+40     	; 0x5b0 <__vector_1+0xd6>
+	}
+	else if(FLAG==6)
+ 588:	86 30       	cpi	r24, 0x06	; 6
+ 58a:	51 f4       	brne	.+20     	; 0x5a0 <__vector_1+0xc6>
+	{
+		DIO_WRITEPIN(pina2,LOW);
+ 58c:	60 e0       	ldi	r22, 0x00	; 0
+ 58e:	82 e0       	ldi	r24, 0x02	; 2
+ 590:	0e 94 62 01 	call	0x2c4	; 0x2c4 <DIO_WRITEPIN>
+		//_delay_ms(300);
+		FLAG++;
+ 594:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <_edata>
+ 598:	8f 5f       	subi	r24, 0xFF	; 255
+ 59a:	80 93 60 00 	sts	0x0060, r24	; 0x800060 <_edata>
+ 59e:	08 c0       	rjmp	.+16     	; 0x5b0 <__vector_1+0xd6>
+	}
+	else if(FLAG==7)
+ 5a0:	87 30       	cpi	r24, 0x07	; 7
+ 5a2:	31 f4       	brne	.+12     	; 0x5b0 <__vector_1+0xd6>
+	{
+DIO_WRITEPIN(pina3,LOW);
+ 5a4:	60 e0       	ldi	r22, 0x00	; 0
+ 5a6:	83 e0       	ldi	r24, 0x03	; 3
+ 5a8:	0e 94 62 01 	call	0x2c4	; 0x2c4 <DIO_WRITEPIN>
+	//_delay_ms(300);
+		FLAG=0;
+ 5ac:	10 92 60 00 	sts	0x0060, r1	; 0x800060 <_edata>
+	}
+	
+	
+ 5b0:	ff 91       	pop	r31
+ 5b2:	ef 91       	pop	r30
+ 5b4:	bf 91       	pop	r27
+ 5b6:	af 91       	pop	r26
+ 5b8:	9f 91       	pop	r25
+ 5ba:	8f 91       	pop	r24
+ 5bc:	7f 91       	pop	r23
+ 5be:	6f 91       	pop	r22
+ 5c0:	5f 91       	pop	r21
+ 5c2:	4f 91       	pop	r20
+ 5c4:	3f 91       	pop	r19
+ 5c6:	2f 91       	pop	r18
+ 5c8:	0f 90       	pop	r0
+ 5ca:	0f be       	out	0x3f, r0	; 63
+ 5cc:	0f 90       	pop	r0
+ 5ce:	1f 90       	pop	r1
+ 5d0:	18 95       	reti
+
+000005d2 <_exit>:
+ 5d2:	f8 94       	cli
+
+000005d4 <__stop_program>:
+ 5d4:	ff cf       	rjmp	.-2      	; 0x5d4 <__stop_program>
